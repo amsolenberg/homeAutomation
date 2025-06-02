@@ -14,7 +14,7 @@ function setupDeaconsBedroomMotionLights() {
         room: 'Deacons Bedroom',
         sensor: 'binary_sensor.motion_deacons_bedroom_occupancy',
         lightEntity: 'light.bulb_deacons_bedroom_light',
-        log: true
+        log: false
     });
 }
 
