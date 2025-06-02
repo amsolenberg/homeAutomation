@@ -1,0 +1,9 @@
+services:
+  home-automation:
+    container_name: home-automation
+    restart: unless-stopped
+    build: .
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    network_mode: host

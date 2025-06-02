@@ -7,6 +7,7 @@ function setupLivingRoomCAMotionLights() {
         lightEntity: ['light.bulb_living_room_lamp_south', 'light.bulb_living_room_lamp_west'],
         enabledEntity: 'input_boolean.toggle_motion_living_room_ca',
         offDelayMinutes: 1
+        // log: true
     });
 }
 
@@ -24,7 +25,8 @@ function setupDownstairsBathroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Downstairs Bathroom',
         sensor: 'binary_sensor.motion_downstairs_bathroom_occupancy',
-        lightEntity: 'light.downstairs_bathroom_lights'
+        lightEntity: 'light.downstairs_bathroom_lights',
+        enabledEntity: 'input_boolean.toggle_motion_downstairs_bathroom'
     });
 }
 
@@ -32,7 +34,9 @@ function setupLaundryRoomMotionLights() {
     setupMotionLightAutomation({
         room: 'Laundry Room',
         sensor: 'binary_sensor.motion_laundry_room_occupancy',
-        lightEntity: 'light.laundry_room_lights'
+        lightEntity: 'light.bulb_laundry_room_light',
+        enabledEntity: 'input_boolean.toggle_motion_laundry_room',
+        offDelayMinutes: 0.5
     });
 }
 
