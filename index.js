@@ -1,11 +1,11 @@
 import { connectWebSocket } from './lib/ha-websocket.js';
-import { setupMainBedroomMotionAutomation } from './automations/motion_lights/main_bedroom.js';
+import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
 
 async function main() {
     try {
         await connectWebSocket();
 
-        setupMainBedroomMotionAutomation();
+        [...bedroomMotionSetups].forEach((setup) => setup());
     } catch (e) {
         console.error('Startup error:', e.message || e);
         process.exit(1);
