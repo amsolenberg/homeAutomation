@@ -5,8 +5,8 @@ function setupLivingRoomCAMotionLights() {
         room: 'Living Room (Computer Area)',
         sensor: 'binary_sensor.presence_sensor_fp2_feed_presence_sensor_2',
         lightEntity: ['light.bulb_living_room_lamp_south', 'light.bulb_living_room_lamp_west'],
+        enabledEntity: 'input_boolean.toggle_motion_living_room_ca',
         offDelayMinutes: 1
-        // log: true
     });
 }
 
@@ -15,8 +15,8 @@ function setupLivingRoomTAMotionLights() {
         room: 'Living Room (TV Area)',
         sensor: 'binary_sensor.presence_sensor_fp2_feed_presence_sensor_3',
         lightEntity: ['light.bulb_living_room_lamp_east', 'light.living_room_lights'],
+        enabledEntity: 'input_boolean.toggle_motion_living_room_ta',
         offDelayMinutes: 1
-        // log: true
     });
 }
 

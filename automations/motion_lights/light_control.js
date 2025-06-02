@@ -1,5 +1,5 @@
 import { subscribeToStates } from '../../lib/ha-websocket.js';
-import { callService } from '../../lib/ha-rest.js';
+import { callService, getState } from '../../lib/ha-rest.js';
 import { getTimestamp } from '../../lib/utils.js';
 
 let offTimers = new Map();
@@ -104,16 +104,45 @@ function getRemainingTime(entity) {
     return Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
 }
 
-export function setupMotionLightAutomation({ room, sensor, lightEntity, offDelayMinutes = 5, log = false }) {
+export function setupMotionLightAutomation({
+    room,
+    sensor,
+    lightEntity,
+    offDelayMinutes = 5,
+    log = false,
+    enabledEntity = null
+}) {
     let lastMotionState = null;
 
     subscribeToStates(async (entities) => {
         const state = entities[sensor]?.state;
 
         if ((state === 'on' || state === 'off') && state !== lastMotionState) {
+            // Check if automation is enabled
+            if (enabledEntity) {
+                try {
+                    const enabledState = await getState(enabledEntity);
+                    if (enabledState.state !== 'on') {
+                        if (log) {
+                            console.log(
+                                `${getTimestamp()} [Motion Automation] ${room} automation is disabled — ignoring motion.`
+                            );
+                        }
+                        return;
+                    }
+                } catch (err) {
+                    console.error(
+                        `${getTimestamp()} [Motion Automation] Failed to check enable status for ${room}:`,
+                        err.message || err
+                    );
+                    return;
+                }
+            }
+
             if (log) {
                 console.log(`${getTimestamp()} [Motion Automation] ${room} motion state: ${state}`);
             }
+
             lastMotionState = state;
             await handleMotionStateChange(room, lightEntity, state, offDelayMinutes, log);
         }
