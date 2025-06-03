@@ -47,7 +47,7 @@ function handleLockState(lockState) {
         log('info', 'Front Door', `Lock state changed: ${lockState}`);
         ntfy({
             channel: 'haos',
-            title: '🚪Front Door',
+            title: 'Front Door',
             message: `The front door was ${lockState}.`
         });
     }
