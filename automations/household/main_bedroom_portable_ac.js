@@ -47,12 +47,20 @@ async function acRun() {
                         await callService('switch', 'turn_off', { entity_id: portableAC });
                         log('warn', 'Portable AC', 'Turned OFF (Door Open)');
                         if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
-                            ntfy('haos', 'The main bedroom door was left open.', 'AC');
+                            ntfy({
+                                channel: 'haos',
+                                title: 'AC',
+                                message: 'The main bedroom door was left open.'
+                            });
                             lastDoorOpenNotification = now;
                         }
                     } else {
                         if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
-                            ntfy('haos', 'The main bedroom door was left open.', 'AC');
+                            ntfy({
+                                channel: 'haos',
+                                title: 'AC',
+                                message: 'The main bedroom door was left open.'
+                            });
                             lastDoorOpenNotification = now;
                         }
                     }
