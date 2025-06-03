@@ -9,7 +9,7 @@ import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
 import { downstairsMotionSetups } from './automations/motion_lights/downstairs.js';
 import { mainFloorMotionSetups } from './automations/motion_lights/main_floor.js';
 import { upstairsMotionSetups } from './automations/motion_lights/upstairs.js';
-import { getMailDeliveredState, mailStatusReset } from './automations/household/mailbox.js';
+import { mailStatusReset } from './automations/household/mailbox.js';
 
 async function main() {
     try {
@@ -29,10 +29,6 @@ async function main() {
         // Schedules
         await import('./automations/schedules/motion_sensors.js');
         await import('./automations/schedules/aquariums.js');
-
-        // Tests
-        // const state = await getMailDeliveredState();
-        // console.log('Mail Delivered State:', state);
     } catch (e) {
         log('error', 'Server', `Startup error:\n${e.message || e}`);
         process.exit(1);
