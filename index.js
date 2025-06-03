@@ -2,7 +2,11 @@ import { connectWebSocket } from './lib/ha-websocket.js';
 import { log } from './lib/logger.js';
 
 // Household
-import { acTonightReset, acRunScheduler } from './automations/household/main_bedroom_portable_ac.js';
+import {
+    acTonightReset,
+    acRunScheduler,
+    acTonightNotification
+} from './automations/household/main_bedroom_portable_ac.js';
 
 // Motion Lights
 import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
@@ -17,6 +21,7 @@ async function main() {
 
         // Household
         acTonightReset();
+        acTonightNotification();
         acRunScheduler();
         mailStatusReset();
         monitorMailbox();

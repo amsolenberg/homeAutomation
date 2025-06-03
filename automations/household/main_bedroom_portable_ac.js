@@ -1,7 +1,8 @@
-import { cronSchedule, isWeekend, isTimeInRange } from '../../lib/utils.js';
+import { cronScheduleService, isWeekend, isTimeInRange, isOnDuty, cronScheduleFn } from '../../lib/utils.js';
 import { callService, getState } from '../../lib/ha-rest.js';
 import { ntfy } from '../../lib/ntfy.js';
 import { log } from '../../lib/logger.js';
+import { onAction, sendActionNotification } from '../../lib/action_notifications.js';
 
 const portableAC = 'switch.outlet_main_bedroom_portable_ac';
 const acTonightSwitch = 'input_boolean.toggle_status_main_bedroom_portable_ac';
@@ -12,11 +13,44 @@ let lastDoorOpenNotification = 0;
 const NOTIFY_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
 
 export function acTonightReset() {
-    cronSchedule('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset');
+    cronScheduleService('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset');
+}
+
+export function acTonightNotification() {
+    cronScheduleFn(
+        '0 18 * * *',
+        async () => {
+            if (await isOnDuty()) {
+                await sendActionNotification({
+                    device: 'mobile_app_tls_phone',
+                    title: 'AC',
+                    message: 'Do you want the AC to run tonight?',
+                    actionsArray: [
+                        { action: 'ENABLE_AC', title: 'Yes' },
+                        { action: 'DISABLE_AC', title: 'No' }
+                    ],
+                    persistent: true,
+                    tag: 'ac_prompt'
+                });
+            }
+        },
+        'acTonightNotification'
+    );
 }
 
 export function acRunScheduler() {
     setInterval(acRun, 60 * 1000); // Run every minute
+}
+
+async function maybeNotifyDoorOpen(now) {
+    if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
+        await ntfy({
+            channel: 'haos',
+            title: 'AC',
+            message: 'The main bedroom door was left open.'
+        });
+        lastDoorOpenNotification = now;
+    }
 }
 
 async function acRun() {
@@ -46,29 +80,15 @@ async function acRun() {
                     if (acState.state !== 'off') {
                         await callService('switch', 'turn_off', { entity_id: portableAC });
                         log('warn', 'Portable AC', 'Turned OFF (Door Open)');
-                        if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
-                            ntfy({
-                                channel: 'haos',
-                                title: 'AC',
-                                message: 'The main bedroom door was left open.'
-                            });
-                            lastDoorOpenNotification = now;
-                        }
+                        await maybeNotifyDoorOpen(now);
                     } else {
-                        if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
-                            ntfy({
-                                channel: 'haos',
-                                title: 'AC',
-                                message: 'The main bedroom door was left open.'
-                            });
-                            lastDoorOpenNotification = now;
-                        }
+                        await maybeNotifyDoorOpen(now);
                     }
                 }
             } else {
                 if (acState.state !== 'off') {
                     await callService('switch', 'turn_off', { entity_id: portableAC });
-                    log('warn', 'Portable AC', 'Turned OFF (AC Tonight is OFF');
+                    log('warn', 'Portable AC', 'Turned OFF (AC Tonight is OFF)');
                 }
             }
         } else {
@@ -81,3 +101,19 @@ async function acRun() {
         log('error', 'Portable AC', `Automation error:\n${e.message || e}`);
     }
 }
+
+onAction('ENABLE_AC', async () => {
+    await callService('input_boolean', 'turn_on', {
+        entity_id: acTonightSwitch
+    });
+});
+
+onAction('DISABLE_AC', async () => {
+    await callService('input_boolean', 'turn_off', {
+        entity_id: acTonightSwitch
+    });
+    await callService('notify', 'mobile_app_tls_phone', {
+        title: 'Portable AC',
+        message: 'Okay, the AC will not turn on.'
+    });
+});
