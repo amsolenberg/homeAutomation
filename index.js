@@ -14,6 +14,7 @@ import { downstairsMotionSetups } from './automations/motion_lights/downstairs.j
 import { mainFloorMotionSetups } from './automations/motion_lights/main_floor.js';
 import { upstairsMotionSetups } from './automations/motion_lights/upstairs.js';
 import { mailStatusReset, monitorMailbox } from './automations/household/mailbox.js';
+import { monitorDoorLock } from './automations/household/front_door.js';
 
 async function main() {
     try {
@@ -23,6 +24,7 @@ async function main() {
         acTonightReset();
         acTonightNotification();
         acRunScheduler();
+        monitorDoorLock();
         mailStatusReset();
         monitorMailbox();
 
