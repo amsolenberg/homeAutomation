@@ -11,7 +11,7 @@ let lastDoorOpenNotification = 0;
 const NOTIFY_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
 
 export function acTonightReset() {
-    cronSchedule('0 4 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset');
+    cronSchedule('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset');
 }
 
 export function acRunScheduler() {
