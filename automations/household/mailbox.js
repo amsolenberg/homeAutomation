@@ -12,8 +12,8 @@ const mailboxRearDoor = 'binary_sensor.contact_mailbox_rear_contact';
 
 // Reset mail status flags
 export function mailStatusReset() {
-    cronSchedule('0 4 * * *', mailCollectedFlag, 'input_boolean', 'turn_off', 'Mail collected flag reset');
-    cronSchedule('0 4 * * *', mailDeliveredFlag, 'input_boolean', 'turn_off', 'Mail delivered flag reset');
+    cronSchedule('0 4 * * *', mailCollectedFlag, 'input_boolean', 'turn_off', 'Mail collected flag reset at 0400');
+    cronSchedule('0 4 * * *', mailDeliveredFlag, 'input_boolean', 'turn_off', 'Mail delivered flag reset at 0400');
 }
 
 async function getFlagState(entity = '') {
@@ -42,6 +42,14 @@ function monitorMailStatus(sensor = '', flag = '') {
         const state = entities[sensor]?.state;
         if (state === 'on') {
             log('debug', 'Mailbox', `${sensor} sensor state: ${state}`);
+
+            if (sensor === mailboxRearDoor) {
+                const mailDelievered = await getFlagState(mailDeliveredFlag);
+                if (!mailDelievered) {
+                    log('debug', 'Mailbox', 'Rear door opened but mail has not yet been marked as delivered');
+                    return;
+                }
+            }
 
             const flagState = await getFlagState(flag);
             if (!flagState) {
