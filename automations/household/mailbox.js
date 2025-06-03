@@ -36,9 +36,7 @@ async function setFlagState(entity = '', state = '') {
 }
 
 function monitorMailStatus(sensor = '', flag = '') {
-    subscribeToStates(async (entities, changedEntityId) => {
-        if (changedEntityId !== sensor) return;
-
+    subscribeToStates(async (entities) => {
         const state = entities[sensor]?.state;
         if (state === 'on') {
             log('debug', 'Mailbox', `${sensor} sensor state: ${state}`);
@@ -46,7 +44,7 @@ function monitorMailStatus(sensor = '', flag = '') {
             if (sensor === mailboxRearDoor) {
                 const mailDelievered = await getFlagState(mailDeliveredFlag);
                 if (!mailDelievered) {
-                    log('debug', 'Mailbox', 'Rear door opened but mail has not yet been marked as delivered');
+                    log('info', 'Mailbox', 'Rear door opened but mail has not yet been marked as delivered');
                     return;
                 }
             }
