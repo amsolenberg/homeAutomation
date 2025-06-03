@@ -2,10 +2,10 @@ import { subscribeToStates } from '../../lib/ha-websocket.js';
 import { callService, getState } from '../../lib/ha-rest.js';
 import { log } from '../../lib/logger.js';
 
-let offTimers = new Map();
-let offTimerEnds = new Map();
+let offTimers = new Map(); // Tracks active off-delay timers per entity
+let offTimerEnds = new Map(); // Tracks when each timer is scheduled to end
 
-// Determine the time of day
+// Returns the general time of day (used for brightness control)
 function getTimeOfDay() {
     const hour = new Date().getHours();
 
@@ -20,7 +20,7 @@ function getTimeOfDay() {
     }
 }
 
-// Determine brightness based on time
+// Returns brightness percentage based on time of day
 function getBrightnessPercentage() {
     const timeOfDay = getTimeOfDay();
     return (
@@ -33,6 +33,7 @@ function getBrightnessPercentage() {
     );
 }
 
+// Changes a light's state to ON or OFF with context-specific settings
 function changeLightState(entity, service) {
     if (service === 'turn_on') {
         const brightness = getBrightnessPercentage();
@@ -52,6 +53,7 @@ function changeLightState(entity, service) {
     }
 }
 
+// Responds to motion sensor state changes to control the light
 async function handleMotionStateChange(room, entity, state, offDelayMinutes) {
     if (state === 'on') {
         if (offTimers.has(entity)) {
@@ -86,6 +88,7 @@ async function handleMotionStateChange(room, entity, state, offDelayMinutes) {
     }
 }
 
+// Returns seconds remaining before a light is scheduled to turn off
 function getRemainingTime(entity) {
     const endsAt = offTimerEnds.get(entity);
     if (!endsAt) return 0;
@@ -120,6 +123,7 @@ export function setupMotionLightAutomation({ room, sensor, lightEntity, offDelay
         }
     });
 
+    // Log remaining time every 10 seconds for visibility
     setInterval(() => {
         const remaining = getRemainingTime(lightEntity);
         if (remaining > 0) {

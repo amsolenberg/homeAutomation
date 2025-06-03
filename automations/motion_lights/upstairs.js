@@ -1,5 +1,6 @@
 import { setupMotionLightAutomation } from './light_control.js';
 
+// Configures motion-based light automation for Upstairs Bathroom
 function setupUpstairsBathroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Upstairs Bathroom',
@@ -9,6 +10,7 @@ function setupUpstairsBathroomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Upstairs Hallway
 function setupUpstairsHallwayMotionLights() {
     setupMotionLightAutomation({
         room: 'Upstairs Hallway',
@@ -18,4 +20,5 @@ function setupUpstairsHallwayMotionLights() {
     });
 }
 
+// Export array of setup functions for batch initialization
 export const upstairsMotionSetups = [setupUpstairsBathroomMotionLights, setupUpstairsHallwayMotionLights];

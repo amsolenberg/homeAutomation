@@ -1,5 +1,6 @@
 import { setupMotionLightAutomation } from './light_control.js';
 
+// Configures motion-based light automation for Living Room (Computer Area)
 function setupLivingRoomCAMotionLights() {
     setupMotionLightAutomation({
         room: 'Living Room (Computer Area)',
@@ -10,6 +11,7 @@ function setupLivingRoomCAMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Living Room (TV Area)
 function setupLivingRoomTAMotionLights() {
     setupMotionLightAutomation({
         room: 'Living Room (TV Area)',
@@ -20,6 +22,7 @@ function setupLivingRoomTAMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Downstairs Bathroom
 function setupDownstairsBathroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Downstairs Bathroom',
@@ -29,6 +32,7 @@ function setupDownstairsBathroomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Laundry Room
 function setupLaundryRoomMotionLights() {
     setupMotionLightAutomation({
         room: 'Laundry Room',
@@ -39,6 +43,7 @@ function setupLaundryRoomMotionLights() {
     });
 }
 
+// Export array of setup functions for batch initialization
 export const downstairsMotionSetups = [
     setupLivingRoomCAMotionLights,
     setupLivingRoomTAMotionLights,

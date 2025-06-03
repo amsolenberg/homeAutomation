@@ -6,17 +6,23 @@ import { ntfy } from '../../lib/ntfy.js';
 const doorContactSensor = 'binary_sensor.contact_front_door_contact';
 const doorLock = 'lock.front_door';
 
+// Returns true if the door is closed (contact sensor is 'off')
 async function isDoorClosed() {
     const doorState = await getState(doorContactSensor);
     return doorState?.state === 'off';
 }
 
+// Returns true if the lock is currently in the 'locked' state
 async function isLockLocked() {
     const lockState = await getState(doorLock);
     return lockState?.state === 'locked';
 }
 
 let lockTimeout = null;
+/**
+ * Called when the door is detected as closed.
+ * If still closed after 30 seconds and not locked, lock it automatically.
+ */
 async function handleDoorClosed() {
     log('debug', 'Front Door', 'Sensor state: closed');
 
@@ -32,6 +38,9 @@ async function handleDoorClosed() {
 }
 
 let lastLockState = null;
+/**
+ * Handles lock state changes to avoid duplicate logs/notifications.
+ */
 function handleLockState(lockState) {
     if (lockState !== lastLockState) {
         lastLockState = lockState;
@@ -45,6 +54,10 @@ function handleLockState(lockState) {
 }
 
 let subscribed = false;
+/**
+ * Subscribes to state changes for both the door sensor and lock.
+ * Initiates delayed auto-lock and sends lock status notifications.
+ */
 export function monitorDoorLock() {
     if (subscribed) return;
     subscribed = true;

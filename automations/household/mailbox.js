@@ -4,13 +4,16 @@ import { ntfy } from '../../lib/ntfy.js';
 import { log } from '../../lib/logger.js';
 import { cronScheduleService } from '../../lib/utils.js';
 
+// Entity definitions
 const mailCollectedFlag = 'input_boolean.toggle_notification_mail_collected';
 const mailDeliveredFlag = 'input_boolean.toggle_notification_mail_delivered';
 // const mailDeliveredOldFlag = 'input_boolean.toggle_notification_mail_delivered_old';
 const mailboxFrontDoor = 'binary_sensor.contact_mailbox_front_contact';
 const mailboxRearDoor = 'binary_sensor.contact_mailbox_rear_contact';
 
-// Reset mail status flags
+/**
+ * Schedules a daily reset of mail status flags at 04:00.
+ */
 export function mailStatusReset() {
     cronScheduleService(
         '0 4 * * *',
@@ -28,6 +31,7 @@ export function mailStatusReset() {
     );
 }
 
+// Helper to read an input_boolean's current state
 async function getFlagState(entity = '') {
     try {
         const flag = await getState(entity);
@@ -37,6 +41,7 @@ async function getFlagState(entity = '') {
     }
 }
 
+// Helper to toggle an input_boolean
 async function setFlagState(entity = '', state = '') {
     try {
         await callService('input_boolean', state.toLowerCase(), {
@@ -47,6 +52,10 @@ async function setFlagState(entity = '', state = '') {
     }
 }
 
+/**
+ * Subscribes to changes in a mailbox sensor and toggles the appropriate flag.
+ * Prevents mail from being marked as collected if it was never marked as delivered.
+ */
 function monitorMailStatus(sensor = '', flag = '') {
     subscribeToStates(async (entities) => {
         const state = entities[sensor]?.state;
@@ -75,6 +84,9 @@ function monitorMailStatus(sensor = '', flag = '') {
     });
 }
 
+/**
+ * Initializes mailbox monitoring by linking door sensors to status flags.
+ */
 export function monitorMailbox() {
     monitorMailStatus(mailboxFrontDoor, mailDeliveredFlag);
     monitorMailStatus(mailboxRearDoor, mailCollectedFlag);

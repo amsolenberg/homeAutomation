@@ -4,6 +4,7 @@ import { ntfy } from '../../lib/ntfy.js';
 import { log } from '../../lib/logger.js';
 import { onAction, sendActionNotification } from '../../lib/action_notifications.js';
 
+// Entity definitions
 const portableAC = 'switch.outlet_main_bedroom_portable_ac';
 const acTonightSwitch = 'input_boolean.toggle_status_main_bedroom_portable_ac';
 const overrideSwitch = 'input_boolean.toggle_status_portable_ac_override';
@@ -12,10 +13,17 @@ const doorSensor = 'binary_sensor.contact_main_bedroom_door_contact';
 let lastDoorOpenNotification = 0;
 const NOTIFY_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
 
+/**
+ * Resets the AC Tonight toggle every day at 12:00 (noon).
+ */
 export function acTonightReset() {
     cronScheduleService('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset at 1200');
 }
 
+/**
+ * Sends a notification at 18:00 prompting the user whether the AC should run tonight.
+ * Only sends if the user is on duty.
+ */
 export function acTonightNotification() {
     cronScheduleFn(
         '0 18 * * *',
@@ -38,10 +46,14 @@ export function acTonightNotification() {
     );
 }
 
+/**
+ * Starts a repeating task every minute to check AC logic.
+ */
 export function acRunScheduler() {
     setInterval(acRun, 60 * 1000); // Run every minute
 }
 
+// Sends a door-left-open notification, throttled by NOTIFY_COOLDOWN_MS
 async function maybeNotifyDoorOpen(now) {
     if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
         await ntfy({
@@ -53,6 +65,9 @@ async function maybeNotifyDoorOpen(now) {
     }
 }
 
+/**
+ * Core logic: runs every minute to control the portable AC based on time, status toggles, and door state.
+ */
 async function acRun() {
     const startTime = 19;
     const endTime = isWeekend() ? 9 : 8;
@@ -102,6 +117,7 @@ async function acRun() {
     }
 }
 
+// Action handlers for ntfy prompts
 onAction('ENABLE_AC', async () => {
     await callService('input_boolean', 'turn_on', {
         entity_id: acTonightSwitch

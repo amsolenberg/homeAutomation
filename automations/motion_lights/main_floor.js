@@ -1,5 +1,6 @@
 import { setupMotionLightAutomation } from './light_control.js';
 
+// Configures motion-based light automation for Kitchen
 function setupKitchenMotionLights() {
     setupMotionLightAutomation({
         room: 'Kitchen',
@@ -9,6 +10,7 @@ function setupKitchenMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Dining Room
 function setupDiningRoomMotionLights() {
     setupMotionLightAutomation({
         room: 'Dining Room',
@@ -18,6 +20,7 @@ function setupDiningRoomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Garage
 function setupGarageMotionLights() {
     setupMotionLightAutomation({
         room: 'Garage',
@@ -27,6 +30,7 @@ function setupGarageMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Office
 function setupOfficeMotionLights() {
     setupMotionLightAutomation({
         room: 'Office',
@@ -36,6 +40,7 @@ function setupOfficeMotionLights() {
     });
 }
 
+// Export array of setup functions for batch initialization
 export const mainFloorMotionSetups = [
     setupKitchenMotionLights,
     setupDiningRoomMotionLights,

@@ -1,5 +1,6 @@
 import { setupMotionLightAutomation } from './light_control.js';
 
+// Configures motion-based light automation for Main Bedroom
 function setupMainBedroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Main Bedroom',
@@ -9,6 +10,7 @@ function setupMainBedroomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Deacon’s Bedroom
 function setupDeaconsBedroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Deacons Bedroom',
@@ -18,6 +20,7 @@ function setupDeaconsBedroomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Girls’ Bedroom
 function setupGirlsBedroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Girls Bedroom',
@@ -27,6 +30,7 @@ function setupGirlsBedroomMotionLights() {
     });
 }
 
+// Configures motion-based light automation for Kael’s Bedroom
 function setupKaelsBedroomMotionLights() {
     setupMotionLightAutomation({
         room: 'Kael Bedroom',
@@ -36,6 +40,7 @@ function setupKaelsBedroomMotionLights() {
     });
 }
 
+// Export array of setup functions for batch initialization
 export const bedroomMotionSetups = [
     setupMainBedroomMotionLights,
     setupDeaconsBedroomMotionLights,

@@ -1,17 +1,18 @@
 # Home Automation
 
-A lightweight, extensible Node.js-based automation framework designed to integrate with Home Assistant using its REST and WebSocket APIs. This project replaces select Node-RED flows wih organized, code-based logic for motion lighting, device scheduling, and custom automations.
+A lightweight, extensible Node.js-based automation framework designed to integrate with Home Assistant using its REST and WebSocket APIs. This project replaces select Node-RED flows with organized, code-based logic for motion lighting, device scheduling, and custom automations.
 
 ---
 
 ## Features
 
--   🧠 Motion-activated lighting with time-based brightness and configurable delay.
--   🕰️ Scheduled automations using cron-style jobs.
--   📅 Time range enforcement for device states.
--   📬 NTFY-based push notifications for important events.
--   🧩 Modular design using per-room and per-scenario automation files.
--   🐳 Runs in Docker for easy deployment and persistence.
+-   🧠 Motion-activated lighting with time-based brightness and configurable delay
+-   🕰️ Scheduled automations using cron-style jobs
+-   ⏱️ Enforced runtime windows for devices (e.g., aquariums, lights)
+-   📬 NTFY-based push notifications for key events
+-   🧩 Modular automation per room or device
+-   🔐 Supports action-based notifications with mobile app replies
+-   🐳 Runs in Docker for easy deployment and persistence
 
 ---
 
@@ -19,20 +20,26 @@ A lightweight, extensible Node.js-based automation framework designed to integra
 
 ```
 homeAutomation/
+├── index.js                 # Main entry point
+├── config.js                # Loads .env variables
+├── README.md
+├── lib/                     # Core logic
+│   ├── ha-rest.js           # REST API wrapper for Home Assistant
+│   ├── ha-websocket.js      # WebSocket connection and state subscriptions
+│   ├── ntfy.js              # Push notification logic
+│   ├── utils.js             # Time helpers, cron, and state enforcement
+│   ├── logger.js            # Winston-based logging with rotation
+│   └── action_notifications.js # Actionable notification handler
+├── automations/            # Modular automation files
+│   ├── motion_lights/       # Organized by area (bedrooms, main floor, etc.)
+│   ├── household/           # Mailbox, front door, portable AC
+│   └── schedules/           # Cron-based toggles (e.g., motion sensor enable/disable)
+├── harness/                # For standalone dev/testing scripts
+│   ├── harness.js           # Test runner
+│   └── bootstrap.js         # Loads .env explicitly
+├── .env                    # Environment variables (not committed)
 ├── Dockerfile
-├── docker-compose.yml
-├── index.js # Main entry point
-├── config.js # Global config (e.g., Home Assistant + NTFY credentials)
-├── automations/ # All logic grouped by category
-│ ├── household/ # e.g., bedroom portable AC control
-│ ├── motion_lights/ # Room-based motion light automation
-│ └── schedules/ # Cron or enforced time range automations
-├── lib/ # Utility modules
-│ ├── ha-rest.js # Home Assistant REST API interface
-│ ├── ha-websocket.js # WebSocket subscription manager
-│ ├── ntfy.js # Notification handler for ntfy
-│ └── utils.js # Timestamps, time ranges, cron scheduler
-└── .gitignore
+└── docker-compose.yml
 ```
 
 ---
@@ -48,19 +55,17 @@ homeAutomation/
 
 ### Configuration
 
-Create a `config.js` file in the root directory:
+Create a `.env` file at the root level:
 
-```js
-export const HA = {
-    BASE_URL: 'http://homeassistant.local:8123',
-    TOKEN: 'YOUR_LONG_LIVED_ACCESS_TOKEN'
-};
-
-export const NTFY = {
-    BASE_URL: 'https://ntfy.yourdomain.com',
-    TOKEN: 'YOUR_NTFY_AUTH_TOKEN'
-};
 ```
+HA_URL=http://homeassistant.local:8123
+HA_TOKEN=your_home_assistant_token
+NTFY_URL=https://ntfy.yourdomain.com
+NTFY_TOKEN=your_ntfy_token
+LOG_LEVEL=info
+```
+
+No need to modify `config.js` — it pulls directly from `.env`.
 
 ### Run with Node
 
@@ -75,24 +80,34 @@ node index.js
 docker compose up -d
 ```
 
-### Customization
+---
 
--   Add new automation logic under `automations/`
--   Use `cronSchedule()` for daily/weekly time-based tasks
--   Use `enforceStateDuringRange()` to keep devices on/off between certain hours
--   Add motion lights using `setupMotionLightAutomation()` in `light_control.js`
--   Send NTFY messages via `ntfy(channel, message, title, priority, tags)`
+## Usage & Customization
 
-### Example Automations
+-   Add motion light automations with `setupMotionLightAutomation()`
+-   Enforce device on/off windows using `enforceStateDuringRange()`
+-   Schedule services with `cronScheduleService()` or `cronScheduleFn()`
+-   Push alerts via `ntfy({ channel, message, title, priority, tags })`
+-   Register response handlers via `onAction('ACTION_NAME', handlerFn)`
 
--   Turn on bedroom lights when motion is detected, then turn off after 5 minutes of inactivity.
--   Keep turtle tank lights on between 8:00–20:00, automatically turning them back on if someone turns them off.
--   Notify if the bedroom door is left open while the portable AC is on.
+---
 
-### License
+## Example Automations
+
+-   🔆 Bedroom lights turn on at night when motion is detected, dimmed to time-appropriate brightness.
+-   🐢 Turtle tank lights stay on from 8:00–20:00, enforced even if turned off manually.
+-   🌡️ Sends a prompt asking if the portable AC should run, then controls it based on time, override switches, and door state.
+-   📬 Detects when mail is delivered or collected, and resets flags at 04:00 daily.
+-   🔒 Locks the front door automatically 30 seconds after it closes, with NTFY alerts on lock state changes.
+
+---
+
+## License
 
 MIT
 
-### Author
+---
+
+## Author
 
 Aaron Solenberg
