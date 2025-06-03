@@ -1,6 +1,6 @@
 import cron from 'node-cron';
-import { callService } from '../lib/ha-rest.js';
-import { getTimestamp } from '../lib/utils.js';
+import { callService } from '../../lib/ha-rest.js';
+import { getTimestamp } from '../../lib/utils.js';
 
 const generalRooms = [
     'input_boolean.toggle_motion_kitchen',
