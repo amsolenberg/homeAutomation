@@ -40,7 +40,7 @@ function setupLaundryRoomMotionLights() {
     });
 }
 
-export const livingRoomMotionSetups = [
+export const downstairsMotionSetups = [
     setupLivingRoomCAMotionLights,
     setupLivingRoomTAMotionLights,
     setupDownstairsBathroomMotionLights,
