@@ -6,6 +6,11 @@ export const HA = {
     TOKEN: process.env.HA_TOKEN
 };
 
+export const NTFY = {
+    BASE_URL: process.env.NTFY_URL,
+    TOKEN: process.env.NTFY_TOKEN
+};
+
 export const ENTITIES = {
     AC_TOGGLE: 'input_boolean.toggle_status_main_bedroom_portable_ac',
     AC_OVERRIDE: 'input_boolean.toggle_status_portable_ac_override',
