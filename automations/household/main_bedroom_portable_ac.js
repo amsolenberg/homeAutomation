@@ -13,7 +13,7 @@ let lastDoorOpenNotification = 0;
 const NOTIFY_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
 
 export function acTonightReset() {
-    cronScheduleService('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset');
+    cronScheduleService('0 12 * * *', acTonightSwitch, 'input_boolean', 'turn_on', 'acTonight Reset at 1200');
 }
 
 export function acTonightNotification() {
@@ -34,7 +34,7 @@ export function acTonightNotification() {
                 });
             }
         },
-        'acTonightNotification'
+        'acTonightNotification at 1800'
     );
 }
 
