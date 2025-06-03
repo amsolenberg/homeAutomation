@@ -6,6 +6,7 @@ services:
     env_file: .env
     environment:
       TZ: America/Indiana/Indianapolis
+      LOG_LEVEL: info
     volumes:
       - ./logs:/app/logs
     network_mode: host
