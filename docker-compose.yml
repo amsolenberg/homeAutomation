@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     build: .
     env_file: .env
+    environment:
+      TZ: America/Indiana/Indianapolis
     volumes:
       - ./logs:/app/logs
     network_mode: host
