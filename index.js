@@ -9,7 +9,7 @@ import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
 import { downstairsMotionSetups } from './automations/motion_lights/downstairs.js';
 import { mainFloorMotionSetups } from './automations/motion_lights/main_floor.js';
 import { upstairsMotionSetups } from './automations/motion_lights/upstairs.js';
-import { mailStatusReset } from './automations/household/mailbox.js';
+import { mailStatusReset, monitorMailbox } from './automations/household/mailbox.js';
 
 async function main() {
     try {
@@ -19,6 +19,7 @@ async function main() {
         acTonightReset();
         acRunScheduler();
         mailStatusReset();
+        monitorMailbox();
 
         // Motion Lights
         [...bedroomMotionSetups].forEach((setup) => setup());
