@@ -6,7 +6,6 @@ function setupMainBedroomMotionLights() {
         sensor: 'binary_sensor.motion_main_bedroom_occupancy',
         lightEntity: 'light.group_light_main_bedroom_lights',
         enabledEntity: 'input_boolean.toggle_motion_main_bedroom'
-        // log: true
     });
 }
 

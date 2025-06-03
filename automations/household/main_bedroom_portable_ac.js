@@ -1,6 +1,7 @@
-import { getTimestamp, cronSchedule, isWeekend, isTimeInRange } from '../../lib/utils.js';
+import { cronSchedule, isWeekend, isTimeInRange } from '../../lib/utils.js';
 import { callService, getState } from '../../lib/ha-rest.js';
 import { ntfy } from '../../lib/ntfy.js';
+import { log } from '../../lib/logger.js';
 
 const portableAC = 'switch.outlet_main_bedroom_portable_ac';
 const acTonightSwitch = 'input_boolean.toggle_status_main_bedroom_portable_ac';
@@ -38,13 +39,13 @@ async function acRun() {
                 if (doorState.state === 'off') {
                     if (acState.state !== 'on') {
                         await callService('switch', 'turn_on', { entity_id: portableAC });
-                        console.log(`${getTimestamp()} [Portable AC] Turned ON (AC Tonight + Door Closed)`);
+                        log('info', 'Portable AC', 'Turned ON (AC Tonight + Door Closed)');
                     }
                 } else {
                     const now = Date.now();
                     if (acState.state !== 'off') {
                         await callService('switch', 'turn_off', { entity_id: portableAC });
-                        console.log(`${getTimestamp()} [Portable AC] Turned OFF (Door Open)`);
+                        log('warn', 'Portable AC', 'Turned OFF (Door Open)');
                         if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
                             ntfy('haos', 'The main bedroom door was left open.', 'AC');
                             lastDoorOpenNotification = now;
@@ -59,16 +60,16 @@ async function acRun() {
             } else {
                 if (acState.state !== 'off') {
                     await callService('switch', 'turn_off', { entity_id: portableAC });
-                    console.log(`${getTimestamp()} [Portable AC] Turned OFF (AC Tonight is OFF)`);
+                    log('warn', 'Portable AC', 'Turned OFF (AC Tonight is OFF');
                 }
             }
         } else {
             if (acState.state !== 'off') {
                 await callService('switch', 'turn_off', { entity_id: portableAC });
-                console.log(`${getTimestamp()} [Portable AC] Turned OFF (Outside runtime window)`);
+                log('info', 'Portable AC', 'Turned OFF (Outside runtime window');
             }
         }
     } catch (e) {
-        console.error(`${getTimestamp()} [Portable AC] Automation error:`, e.message || e);
+        log('error', 'Portable AC', `Automation error:\n${e.message || e}`);
     }
 }

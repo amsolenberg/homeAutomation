@@ -7,7 +7,6 @@ function setupLivingRoomCAMotionLights() {
         lightEntity: ['light.bulb_living_room_lamp_south', 'light.bulb_living_room_lamp_west'],
         enabledEntity: 'input_boolean.toggle_motion_living_room_ca',
         offDelayMinutes: 1
-        // log: true
     });
 }
 

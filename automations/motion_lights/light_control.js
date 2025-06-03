@@ -1,6 +1,6 @@
 import { subscribeToStates } from '../../lib/ha-websocket.js';
 import { callService, getState } from '../../lib/ha-rest.js';
-import { getTimestamp } from '../../lib/utils.js';
+import { log } from '../../lib/logger.js';
 
 let offTimers = new Map();
 let offTimerEnds = new Map();
@@ -47,41 +47,33 @@ function changeLightState(entity, service) {
             transition: 30
         });
     } else {
+        log('error', 'changeLightState', `Invalid light service: ${service}`);
         throw new Error(`Invalid light service: ${service}`);
     }
 }
 
-async function handleMotionStateChange(room, entity, state, offDelayMinutes, log) {
+async function handleMotionStateChange(room, entity, state, offDelayMinutes) {
     if (state === 'on') {
         if (offTimers.has(entity)) {
             clearTimeout(offTimers.get(entity));
             offTimers.delete(entity);
             offTimerEnds.delete(entity);
-            if (log) {
-                console.log(`${getTimestamp()} [Motion Automation] ${room} light timer cancelled due to new motion.`);
-            }
+            log('debug', 'Motion', `${room} light timer cancelled due to new motion`);
         }
         try {
             await changeLightState(entity, 'turn_on');
-            if (log) {
-                console.log(`${getTimestamp()} [Motion Automation] ${room} light turned ON`);
-            }
+            log('debug', 'Motion', `${room} light turned ON`);
         } catch (e) {
-            console.error(`${getTimestamp()} [Motion Automation] Failed to turn ${room} light ON:`, e.message || e);
+            log('error', 'Motion', `Failed to turn ${room} light ON:\n${e.message || e}`);
         }
     } else if (state === 'off') {
         if (!offTimers.has(entity)) {
             const timeout = setTimeout(async () => {
                 try {
                     await changeLightState(entity, 'turn_off');
-                    if (log) {
-                        console.log(`${getTimestamp()} [Motion Automation] ${room} light turned OFF`);
-                    }
+                    log('debug', 'Motion', `${room} light turned OFF`);
                 } catch (e) {
-                    console.error(
-                        `${getTimestamp()} [Motion Automation] Failed to turn ${room} light OFF:`,
-                        e.message || e
-                    );
+                    log('error', 'Motion', `Failed to turn ${room} light OFF:\n${e.message || e}`);
                 }
                 offTimers.delete(entity);
                 offTimerEnds.delete(entity);
@@ -89,11 +81,7 @@ async function handleMotionStateChange(room, entity, state, offDelayMinutes, log
 
             offTimers.set(entity, timeout);
             offTimerEnds.set(entity, Date.now() + offDelayMinutes * 60 * 1000);
-            if (log) {
-                console.log(
-                    `${getTimestamp()} [Motion Automation] ${room} light timer started to turn light off in ${offDelayMinutes} minutes.`
-                );
-            }
+            log('debug', 'Motion', `${room} light timer started to turn light off in ${offDelayMinutes} minutes`);
         }
     }
 }
@@ -104,14 +92,7 @@ function getRemainingTime(entity) {
     return Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
 }
 
-export function setupMotionLightAutomation({
-    room,
-    sensor,
-    lightEntity,
-    offDelayMinutes = 5,
-    log = false,
-    enabledEntity = null
-}) {
+export function setupMotionLightAutomation({ room, sensor, lightEntity, offDelayMinutes = 5, enabledEntity = null }) {
     let lastMotionState = null;
 
     subscribeToStates(async (entities) => {
@@ -123,39 +104,26 @@ export function setupMotionLightAutomation({
                 try {
                     const enabledState = await getState(enabledEntity);
                     if (enabledState.state !== 'on') {
-                        if (log) {
-                            console.log(
-                                `${getTimestamp()} [Motion Automation] ${room} automation is disabled — ignoring motion.`
-                            );
-                        }
+                        log('debug', 'Motion', `${room} automation is disabled — ignoring motion`);
                         return;
                     }
-                } catch (err) {
-                    console.error(
-                        `${getTimestamp()} [Motion Automation] Failed to check enable status for ${room}:`,
-                        err.message || err
-                    );
+                } catch (e) {
+                    log('error', 'Motion', `Failed to check enable status for ${room}:\n${e.message || e}`);
                     return;
                 }
             }
 
-            if (log) {
-                console.log(`${getTimestamp()} [Motion Automation] ${room} motion state: ${state}`);
-            }
+            log('debug', 'Motion', `${room} motion state: ${state}`);
 
             lastMotionState = state;
-            await handleMotionStateChange(room, lightEntity, state, offDelayMinutes, log);
+            await handleMotionStateChange(room, lightEntity, state, offDelayMinutes);
         }
     });
 
-    if (log) {
-        setInterval(() => {
-            const remaining = getRemainingTime(lightEntity);
-            if (remaining > 0) {
-                console.log(
-                    `${getTimestamp()} [Motion Automation] ${room} light will turn off in ${remaining} seconds`
-                );
-            }
-        }, 10000);
-    }
+    setInterval(() => {
+        const remaining = getRemainingTime(lightEntity);
+        if (remaining > 0) {
+            log('debug', 'Motion', `${room} light will turn off in ${remaining} seconds`);
+        }
+    }, 10000);
 }

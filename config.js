@@ -10,3 +10,7 @@ export const NTFY = {
     BASE_URL: process.env.NTFY_URL,
     TOKEN: process.env.NTFY_TOKEN
 };
+
+export const ENV = {
+    LOG_LEVEL: process.env.LOG_LEVEL || 'info'
+};

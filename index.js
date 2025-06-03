@@ -1,4 +1,5 @@
 import { connectWebSocket } from './lib/ha-websocket.js';
+import { log } from './lib/logger.js';
 
 // Household
 import { acTonightReset, acRunScheduler } from './automations/household/main_bedroom_portable_ac.js';
@@ -27,7 +28,7 @@ async function main() {
         await import('./automations/schedules/motion_sensors.js');
         await import('./automations/schedules/aquariums.js');
     } catch (e) {
-        console.error('Startup error:', e.message || e);
+        log('error', 'Server', `Startup error:\n${e.message || e}`);
         process.exit(1);
     }
 }
