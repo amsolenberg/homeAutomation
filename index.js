@@ -11,6 +11,7 @@ import { mailStatusReset, monitorMailbox } from './automations/household/mailbox
 import { monitorDoorLock } from './automations/household/front_door.js';
 import { controlExhaustFan } from './automations/household/upstairs_bathroom_exhaust_fan.js';
 import { alwaysOnSwitches } from './automations/household/always_on_switches.js';
+import { checkBatteryLevels } from './automations/household/battery_levels.js';
 
 // Motion lighting automations by area
 import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
@@ -33,6 +34,7 @@ async function main() {
         acTonightNotification();
         acRunScheduler();
         alwaysOnSwitches();
+        checkBatteryLevels();
         controlExhaustFan;
         monitorDoorLock();
         mailStatusReset();
