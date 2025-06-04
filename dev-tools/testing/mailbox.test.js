@@ -1,11 +1,14 @@
-import { runWithHA } from './harness.js';
+import { getState } from '../../lib/ha-rest.js';
 import { log } from '../../lib/logger.js';
-import { getFlagState } from '../../automations/household/mailbox.js'; // No longer exported
 
-const label = 'getFlagState';
-const fn = getFlagState('input_boolean.toggle_notification_mail_delivered');
+async function getFlagState(entity = '') {
+    try {
+        const flag = await getState(entity);
+        const flagState = flag?.state === 'on';
+        console.log(flagState);
+    } catch (e) {
+        log('error', 'Mailbox', `getFlagState error:\n${e.message || e}`);
+    }
+}
 
-runWithHA(label, async () => {
-    const result = await fn;
-    log('info', '', `${label}: ${result}`);
-});
+getFlagState('input_boolean.toggle_notification_mail_collected');
