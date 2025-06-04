@@ -24,7 +24,7 @@ function setupDiningRoomMotionLights() {
 function setupGarageMotionLights() {
     setupMotionLightAutomation({
         room: 'Garage',
-        sensor: 'binary_sensor.motion_garage',
+        sensor: 'binary_sensor.motion_garage_occupancy',
         lightEntity: 'light.group_light_garage_lights',
         enabledEntity: 'input_boolean.toggle_motion_garage'
     });
