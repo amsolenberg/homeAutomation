@@ -47,6 +47,7 @@ async function main() {
         // Load time-based automation schedules
         await import('./automations/schedules/motion_sensors.js');
         await import('./automations/schedules/aquariums.js');
+        await import('./automations/schedules/plant_lights.js');
     } catch (e) {
         log('error', 'Server', `Startup error:\n${e.message || e}`);
         process.exit(1);
