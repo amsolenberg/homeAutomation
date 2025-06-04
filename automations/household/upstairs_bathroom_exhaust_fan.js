@@ -1,6 +1,6 @@
-import { callService, getState } from '../../lib/ha-rest';
-import { subscribeToStates } from '../../lib/ha-websocket';
-import { log } from '../../lib/logger';
+import { callService, getState } from '../../lib/ha-rest.js';
+import { subscribeToStates } from '../../lib/ha-websocket.js';
+import { log } from '../../lib/logger.js';
 
 const humiditySensor = 'sensor.multisensor_upstairs_bathroom_humidity';
 const exhaustFan = 'fan.upstairs_bathroom_exhaust_fan';
