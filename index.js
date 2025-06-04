@@ -10,6 +10,7 @@ import {
 import { mailStatusReset, monitorMailbox } from './automations/household/mailbox.js';
 import { monitorDoorLock } from './automations/household/front_door.js';
 import { controlExhaustFan } from './automations/household/upstairs_bathroom_exhaust_fan.js';
+import { alwaysOnSwitches } from './automations/household/always_on_switches.js';
 
 // Motion lighting automations by area
 import { bedroomMotionSetups } from './automations/motion_lights/bedrooms.js';
@@ -31,6 +32,7 @@ async function main() {
         acTonightReset();
         acTonightNotification();
         acRunScheduler();
+        alwaysOnSwitches;
         controlExhaustFan;
         monitorDoorLock();
         mailStatusReset();
