@@ -32,7 +32,7 @@ async function main() {
         acTonightReset();
         acTonightNotification();
         acRunScheduler();
-        alwaysOnSwitches;
+        alwaysOnSwitches();
         controlExhaustFan;
         monitorDoorLock();
         mailStatusReset();
