@@ -56,11 +56,7 @@ export function acRunScheduler() {
 // Sends a door-left-open notification, throttled by NOTIFY_COOLDOWN_MS
 async function maybeNotifyDoorOpen(now) {
     if (now - lastDoorOpenNotification > NOTIFY_COOLDOWN_MS) {
-        await ntfy({
-            channel: 'haos',
-            title: 'AC',
-            message: 'The main bedroom door was left open.'
-        });
+        log('alert', 'AC', 'The main bedroom door was left open');
         lastDoorOpenNotification = now;
     }
 }

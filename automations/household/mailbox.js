@@ -73,12 +73,7 @@ function monitorMailStatus(sensor = '', flag = '') {
             const flagState = await getFlagState(flag);
             if (!flagState) {
                 await setFlagState(flag, 'turn_on');
-                log('info', 'Mailbox', `Mail has been ${sensor === mailboxFrontDoor ? 'delivered' : 'collected'}`);
-                ntfy({
-                    channel: 'haos',
-                    title: 'Mailbox',
-                    message: `Mail has been ${sensor === mailboxFrontDoor ? 'delivered' : 'collected'}`
-                });
+                log('alert', 'Mailbox', `Mail has been ${sensor === mailboxFrontDoor ? 'delivered' : 'collected'}`);
             }
         }
     });

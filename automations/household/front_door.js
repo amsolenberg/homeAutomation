@@ -44,12 +44,7 @@ let lastLockState = null;
 function handleLockState(lockState) {
     if (lockState !== lastLockState) {
         lastLockState = lockState;
-        log('info', 'Front Door', `Lock state changed: ${lockState}`);
-        ntfy({
-            channel: 'haos',
-            title: 'Front Door',
-            message: `The front door was ${lockState}.`
-        });
+        log('alert', 'Front Door', `The front door was ${lockState}`);
     }
 }
 

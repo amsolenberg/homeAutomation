@@ -7,7 +7,7 @@ import { cronScheduleFn } from '../../lib/utils.js';
  * Checks all battery sensor entities for levels below 10%.
  * Logs any invalid or low values, and sends a notification via NTFY if needed.
  */
-async function ntfyLowBattery() {
+export async function ntfyLowBattery() {
     const exclude = ['ams', 'tls', 'weebo']; // Filter out these substrings from entity IDs
     const entityList = await getAllStates();
 
@@ -28,17 +28,12 @@ async function ntfyLowBattery() {
         }
 
         if (batteryPercent < 10) {
-            log('warn', 'Battery Levels', `${entity} battery low: ${batteryPercent}`);
             lowBatteryList.push(`- ${name}: ${batteryPercent}%`);
         }
     }
 
     if (lowBatteryList.length > 0) {
-        ntfy({
-            channel: 'haos_server',
-            title: 'Battery Levels',
-            message: `Low battery levels detected:\n${lowBatteryList.join('\n')}`
-        });
+        log('warn', 'Battery Levels', `Low battery levels detected:\n${lowBatteryList.join('\n')}`);
     }
 }
 

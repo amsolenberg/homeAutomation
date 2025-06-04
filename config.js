@@ -11,7 +11,14 @@ export const HA = {
 // ntfy notification server settings
 export const NTFY = {
     BASE_URL: process.env.NTFY_URL,
-    TOKEN: process.env.NTFY_TOKEN
+    TOKEN: process.env.NTFY_TOKEN,
+    ERROR_TOPIC: process.env.NTFY_ERROR_TOPIC,
+    WARN_TOPIC: process.env.NTFY_WARN_TOPIC,
+    ALERT_TOPIC: process.env.NTFY_ALERT_TOPIC,
+    NOTIFY_TOPIC: process.env.NTFY_NOTIFY_TOPIC,
+    INFO_TOPIC: process.env.NTFY_INFO_TOPIC,
+    DEBUG_TOPIC: process.env.NTFY_DEBUG_TOPIC,
+    PTFD_TOPIC: process.env.NTFY_PTFD_TOPIC
 };
 
 // General environment-level settings
