@@ -24,10 +24,12 @@ async function switchOn(entity) {
  * are turned on at all times (unless they are unavailable or unknown).
  */
 export async function alwaysOnSwitches() {
+    for (const entity_id of switches) {
+        log('info', 'Always On Switches', `Monitoring switch: ${entity_id}`);
+    }
+
     subscribeToStates(async (entities) => {
         for (const entity of switches) {
-            log('info', 'Always On Switches', `Monitoring switch: ${entity}`);
-
             const currentState = entities[entity]?.state;
             if (!currentState) {
                 log('warn', 'Always On Switches', `${entity} has no state`);
