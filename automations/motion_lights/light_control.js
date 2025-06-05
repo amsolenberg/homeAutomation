@@ -95,6 +95,16 @@ function getRemainingTime(entity) {
     return Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
 }
 
+/**
+ * Sets up motion-activated lighting automation.
+ *
+ * @param {Object} params
+ * @param {string} params.room - Name of the room (for logging/debugging).
+ * @param {string} params.sensor - Entity ID of the motion sensor.
+ * @param {string|string[]} params.lightEntity - Entity ID(s) of the light(s) to control.
+ * @param {number} [params.offDelayMinutes=5] - Time in minutes before turning off lights after no motion.
+ * @param {string|null} [params.enabledEntity=null] - Optional entity that controls whether the automation is enabled.
+ */
 export function setupMotionLightAutomation({ room, sensor, lightEntity, offDelayMinutes = 5, enabledEntity = null }) {
     let lastMotionState = null;
 
