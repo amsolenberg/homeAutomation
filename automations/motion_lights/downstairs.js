@@ -62,7 +62,6 @@ function setupLaundryRoomMotionLights() {
 // Export array of setup functions for batch initialization
 export const downstairsMotionSetups = [
     setupLivingRoomMotionLights,
-    ,
     setupDownstairsBathroomMotionLights,
     setupLaundryRoomMotionLights
 ];
