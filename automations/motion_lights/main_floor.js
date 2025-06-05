@@ -14,7 +14,8 @@ function setupKitchenMotionLights() {
 function setupDiningRoomMotionLights() {
     setupMotionLightAutomation({
         room: 'Dining Room',
-        sensor: 'binary_sensor.dining_room_fp2_presence_sensory_dining_area',
+        // sensor: 'binary_sensor.dining_room_fp2_presence_sensory_dining_area',
+        sensor: 'binary_sensor.motion_dining_room_occupancy',
         lightEntity: 'light.dining_room_lights',
         enabledEntity: 'input_boolean.toggle_motion_dining_room'
     });
