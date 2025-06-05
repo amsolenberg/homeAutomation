@@ -5,6 +5,25 @@ import { ntfy } from '../../lib/ntfy.js';
 
 const doorContactSensor = 'binary_sensor.contact_front_door_contact';
 const doorLock = 'lock.front_door';
+const personName = 'sensor.front_door_person_name';
+
+export async function getPersonName() {
+    try {
+        const { state: name } = await getState(personName);
+
+        if (name === 'No Person') {
+            return null;
+        } else if (name === 'euf***') {
+            return 'Aaron';
+        } else if (name === 'has***') {
+            return 'an automation';
+        } else {
+            return name.split(' ')[0];
+        }
+    } catch (e) {
+        log('error', 'Front Door', `getPersonName() error:\n${e.message || e}`);
+    }
+}
 
 // Returns true if the door is closed (contact sensor is 'off')
 async function isDoorClosed() {
@@ -41,10 +60,15 @@ let lastLockState = null;
 /**
  * Handles lock state changes to avoid duplicate logs/notifications.
  */
-function handleLockState(lockState) {
+export async function handleLockState(lockState) {
     if (lockState !== lastLockState) {
         lastLockState = lockState;
-        log('alert', 'Front Door', `The front door was ${lockState}`);
+        const person = await getPersonName();
+        if (person != null) {
+            log('alert', 'Front Door', `The front door was ${lockState} by ${person}`);
+        } else {
+            log('alert', 'Front Door', `The front door was ${lockState}`);
+        }
     }
 }
 
