@@ -9,7 +9,7 @@ const personName = 'sensor.front_door_person_name';
 
 export async function getPersonName() {
     try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2 * 1000));
 
         const { state: name } = await getState(personName);
 
