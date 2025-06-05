@@ -17,7 +17,6 @@ export const NTFY = {
     ALERT_TOPIC: process.env.NTFY_ALERT_TOPIC,
     NOTIFY_TOPIC: process.env.NTFY_NOTIFY_TOPIC,
     INFO_TOPIC: process.env.NTFY_INFO_TOPIC,
-    DEBUG_TOPIC: process.env.NTFY_DEBUG_TOPIC,
     PTFD_TOPIC: process.env.NTFY_PTFD_TOPIC
 };
 
