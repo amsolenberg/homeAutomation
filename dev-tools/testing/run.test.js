@@ -1,5 +1,5 @@
 import { run } from './run.js';
-import { getAllStates } from '../../lib/ha-rest.js';
+import { getAllStates, getState } from '../../lib/ha-rest.js';
 import { ntfyLowBattery } from '../../automations/household/battery_levels.js';
 import { log } from '../../lib/logger.js';
 import { getPersonName } from '../../automations/household/front_door.js';
@@ -16,7 +16,9 @@ import { getPersonName } from '../../automations/household/front_door.js';
 // log('warn', 'Battery', 'Battery dropped below 15%');
 // log('debug', 'Test', { msg: 'This is debug', value: 42 });
 
-await run('getPersonName()', async () => {
-    const name = await getPersonName();
-    console.log(name);
-});
+async function getEntityState(entity) {
+    const entityState = await getState(entity);
+    console.log(entityState);
+}
+
+getEntityState('media_player.living_room_speaker');
